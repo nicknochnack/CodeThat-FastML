@@ -4,13 +4,6 @@ from pydantic import BaseModel
 import pickle
 import pandas as pd
 
-# {
-# "YearsAtCompany":1,
-# "EmployeeSatisfaction":0.01,
-# "Position":"Non-Manager",
-# "Salary":4.0
-# }
-
 app = FastAPI()
 
 class ScoringItem(BaseModel): 
@@ -22,7 +15,7 @@ class ScoringItem(BaseModel):
 with open('rfmodel.pkl', 'rb') as f: 
     model = pickle.load(f)
 
-@app.get('/')
+@app.post('/')
 async def score_model(item:ScoringItem):
     df = pd.DataFrame([item.dict().values()], columns=list(item.dict().keys()))
     yhat = model.predict(df)
